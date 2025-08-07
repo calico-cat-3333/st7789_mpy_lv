@@ -1,4 +1,34 @@
 
+# ST7789 Display Driver for lv_micropython
+
+Modify the original project to remove tjpgd in order to avoid conflicts with the version integrated in LVGL.
+
+To build the firmware(RP2040 platform):
+
+```
+mkdir build-lvmicropython
+cd build-lvmicropython
+
+git clone https://github.com/lvgl/lv_micropython.git
+git clone https://github.com/calico-cat-3333/st7789_mpy_lv.git
+
+echo 'include(${CMAKE_CURRENT_LIST_DIR}/lv_micropython/user_modules/lv_binding_micropython/bindings.cmake)' >> bind.cmake
+echo 'include(${CMAKE_CURRENT_LIST_DIR}/st7789_mpy_lv/src/micropython.cmake)' >> bind.cmake
+
+echo 'module("lv_utils.py", base_path="../../../user_modules/lv_binding_micropython/lib")' >> lv_micropython/ports/rp2/boards/mainifest.py
+echo 'module("fs_driver.py", base_path="../../../user_modules/lv_binding_micropython/lib")' >> lv_micropython/ports/rp2/boards/mainifest.py
+
+cd lv_micropython
+git submodule update --init --recursive user_modules/lv_binding_micropython
+make -C ports/rp2 BOARD=PICO submodules
+make -j -C mpy-cross
+make -j -C ports/rp2 BOARD=PICO USER_C_MODULES=../../../bind.cmake
+```
+
+Note: The files in the firmware folder are not prebuilt binaries. Please do not use them.
+
+Note: Tested only on the RP2040 platform.
+
 # ST7789 Driver for MicroPython
 
 This driver is based on [devbis' st7789_mpy driver.](https://github.com/devbis/st7789_mpy)
@@ -9,9 +39,9 @@ I modified the original driver for one of my projects to add:
 - Writing text using bitmaps converted from True Type fonts
 - Drawing text using 8 and 16-bit wide bitmap fonts
 - Drawing text using Hershey vector fonts
-- Drawing JPGs, including a SLOW mode to draw jpg's larger than available ram
+- ~~Drawing JPGs, including a SLOW mode to draw jpg's larger than available ram
   using the TJpgDec - Tiny JPEG Decompressor R0.01d. from
-  http://elm-chan.org/fsw/tjpgd/00index.html
+  http://elm-chan.org/fsw/tjpgd/00index.html~~
 - Drawing PNGs using the pngle library from https://github.com/kikuchan/pngle
 - Drawing and rotating Polygons and filled Polygons.
 - Tracking bounds
@@ -537,29 +567,28 @@ of the screen.
 
   Returns the string's width in pixels if drawn with the specified font.
 
-- `jpg(jpg, x, y [, method])`
+- ~~`jpg(jpg, x, y [, method])`~~
 
-  Draw a `jpg` on the display with the given `x` and `y` coordinates as the
+  ~~Draw a `jpg` on the display with the given `x` and `y` coordinates as the
   upper left corner of the image. `jpg` may be a string containing a filename
-  or a buffer containing the JPEG image data.
+  or a buffer containing the JPEG image data.~~
 
-  The memory required to decode and display a JPG can be considerable as a full-screen
+  ~~The memory required to decode and display a JPG can be considerable as a full-screen
   320x240 JPG would require at least 3100 bytes for the working area + 320 * 240 * 2
   bytes of ram to buffer the image. Jpg images that would require a buffer larger than
   available memory can be drawn by passing `SLOW` for the `method`. The `SLOW` `method`
   will draw the image one piece at a time using the Minimum Coded Unit (MCU, typically
-  a multiple of 8x8) of the image. The default method is `FAST`.
+  a multiple of 8x8) of the image. The default method is `FAST`.~~
 
-- `jpg_decode(jpg_filename [, x, y, width, height])`
+- ~~`jpg_decode(jpg_filename [, x, y, width, height])`~~
 
-  Decode a jpg file and return it or a portion of it as a tuple composed of
+  ~~Decode a jpg file and return it or a portion of it as a tuple composed of
   (buffer, width, height). The buffer is a color565 blit_buffer compatible byte
-  array. The buffer will require width * height * 2 bytes of memory.
+  array. The buffer will require width * height * 2 bytes of memory.~~
 
-  If the optional x, y, width, and height parameters are given, the buffer will
+  ~~If the optional x, y, width, and height parameters are given, the buffer will
   only contain the specified area of the image. See examples/T-DISPLAY/clock/clock.py
-  examples/T-DISPLAY/toasters_jpg/toasters_jpg.py for examples.
-
+  examples/T-DISPLAY/toasters_jpg/toasters_jpg.py for examples.~~
 - `png(png_filename, x, y [, mask])`
 
   Draw a PNG file on the display with upper left corner of the image at the given `x` and `y`
