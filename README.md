@@ -13,7 +13,7 @@ git clone https://github.com/lvgl/lv_micropython.git
 git clone https://github.com/calico-cat-3333/st7789_mpy_lv.git
 
 echo 'include(${CMAKE_CURRENT_LIST_DIR}/lv_micropython/user_modules/lv_binding_micropython/bindings.cmake)' >> bind.cmake
-echo 'include(${CMAKE_CURRENT_LIST_DIR}/st7789_mpy_lv/src/micropython.cmake)' >> bind.cmake
+echo 'include(${CMAKE_CURRENT_LIST_DIR}/st7789_mpy_lv/st7789/micropython.cmake)' >> bind.cmake
 
 echo 'module("lv_utils.py", base_path="../../../user_modules/lv_binding_micropython/lib")' >> lv_micropython/ports/rp2/boards/manifest.py
 echo 'module("fs_driver.py", base_path="../../../user_modules/lv_binding_micropython/lib")' >> lv_micropython/ports/rp2/boards/manifest.py
